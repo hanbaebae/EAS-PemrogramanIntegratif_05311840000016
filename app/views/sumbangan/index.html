@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+ 
+ 
+{% block body %}
+<div class="container">
+    {% if note is defined %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {{ note }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+    {% if alert is defined %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ alert }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+    <br>
+    <form action="inputdata" method="POST">
+        <div class="form-group">
+          <label for="name">Nama</label>
+          <input type="text" class="form-control" id="name" name="name" placeholder="Nama Lengkap Anda">
+        </div>
+        <div class="form-group">
+          <label for="gender">Jenis Kelamin</label>
+          <select class="form-control" id="gender" name="gender">
+            <option value="0">Perempuan</option>
+            <option value="1">Laki-laki</option>
+            </select>
+        </div>
+
+        <div class="form-group field_wrapper">
+            <label for="jenis_sumbangan[]">Jenis Donasi</label>
+            <div class="row">
+                <div class="col-11">
+                    <input class="form-control" type="text" list="jenis_sumbangan[]" name="jenis_sumbangan[]" />
+                    <datalist id="jenis_sumbangan[]">
+                        {% for a in barang %}
+                        <option>{{ a.barang }}</option>
+                        {% endfor %}
+                    </datalist>
+                    <label for="jumlah[]">Jumlah</label>
+                    <input type="number" class="form-control" id="jumlah[]" name="jumlah[]" placeholder="1, 2, 3, ...">
+                    <small id="jumlah" class="form-text text-muted">dalam kg/pcs/liter.</small>
+                </div>
+                <div class="col">
+                    <a href="javascript:void(0);" class="add_button btn btn-primary" title="Add field">+</a>
+                </div>
+
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary" name="submit" id="submit">Donasikan</button>
+      </form>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        var maxField = 10; 
+        var addButton = $('.add_button'); 
+        var wrapper = $('.field_wrapper'); 
+        var fieldHTML = '<div><label for="jenis_sumbangan[]">Jenis Sumbangan</label><div class="row"> '+
+                        '    <div class="col-11"> '+
+                        '        <input class="form-control" type="text" name="jenis_sumbangan[]" /> '+
+                        '        <label for="jumlah">Jumlah</label> '+
+                        '        <input type="number" class="form-control" id="jumlah" name="jumlah[]" placeholder="1, 2, 3, ..."> '+
+                        '        <small id="jumlah" class="form-text text-muted">dalam kg/pcs/liter.</small> '+
+                        '    </div> '+
+                        '    <div class="col"> '+
+                        '        <a href="javascript:void(0);" class="remove_button btn btn-danger">-</a> '+
+                        '    </div> '+
+                        '</div></div>';
+        var x = 1; 
+        
+        $(addButton).click(function(){
+            if(x < maxField){ 
+                x++;
+                $(wrapper).append(fieldHTML); 
+            }
+        });
+        
+        //Once remove button is clicked
+        $(wrapper).on('click', '.remove_button', function(e){
+            e.preventDefault();
+            $(this).parent('div').parent('div').parent('div').remove(); 
+            x--; 
+        });
+    });
+</script>
+{% endblock %}
